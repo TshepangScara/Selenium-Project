@@ -1,6 +1,8 @@
+import argparse
 import csv
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 
@@ -10,7 +12,19 @@ OUTPUT_FILE = "books.csv"
 
 
 def main():
-    driver = webdriver.Chrome()
+    parser = argparse.ArgumentParser(description="Scrape book titles and prices.")
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help="run Chrome without opening a visible window",
+    )
+    args = parser.parse_args()
+
+    options = Options()
+    if args.headless:
+        options.add_argument("--headless=new")
+
+    driver = webdriver.Chrome(options=options)
     try:
         driver.get(BASE_URL)
         print("Page title:", driver.title)
